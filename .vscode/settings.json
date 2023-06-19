@@ -1,0 +1,10 @@
+{
+  "prettier.prettierPath": "//home//maletta//.nvm//versions//node//v20.2.0//lib//node_modules//prettier",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+}
