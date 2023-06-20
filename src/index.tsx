@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { defaultTheme } from 'styles/themeMui';
 
+import App from './App';
 import reportWebVitals from './reportWebVitals';
-import router from './routes';
 
 // import './styles/global.css';
 
@@ -19,7 +18,7 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <RouterProvider router={router} />
+      <App />
     </ThemeProvider>
   </React.StrictMode>,
 );
