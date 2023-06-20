@@ -36,6 +36,10 @@ const ListItemButtonStyled = styled(ListItemButton)<ICollapsed>`
 `;
 
 const ListItemTextStyled = styled(ListItemText)`
+  &.MuiListItemText-root {
+    flex-shrink: 0;
+    overflow-x: hidden;
+  }
   .MuiTypography-root {
     font-size: 0.875rem;
   }

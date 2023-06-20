@@ -15,7 +15,7 @@
     "@types/node": "^16.11.33",
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.3",
-    "axios": "^0.27.2",
+    "axios": "^1.4.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-reveal": "^1.2.2",
@@ -48,6 +48,7 @@
   "devDependencies": {
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "axios-mock-adapter": "^1.21.5",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^26.1.5",
