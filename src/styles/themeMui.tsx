@@ -12,6 +12,11 @@ const defaultTheme = createTheme({
       height: '3.875rem',
     },
   },
+  palette: {
+    primary: {
+      main: '#222e3c',
+    },
+  },
   components: {
     MuiButton: {
       styleOverrides: {

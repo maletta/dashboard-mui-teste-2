@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-import { FormControl, FormHelperText, Grid, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
+import { Button, FormControl, FormHelperText, Grid, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
 import logo from 'assets/logo-vipe-principal-menor.png';
 
 import * as L from './styles';
@@ -18,6 +18,8 @@ const Login: React.FC = () => {
           boxShadow: 1,
           backgroundColor: '#fff',
           borderRadius: '6px',
+          paddingTop: '70px',
+          paddingBottom: '0px',
         }}
         p={4}
       >
@@ -52,7 +54,7 @@ const Login: React.FC = () => {
           </FormControl>
 
           <FormControl variant="standard" fullWidth>
-            <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+            <InputLabel htmlFor="standard-adornment-password">Senha</InputLabel>
             <Input
               id="password"
               name="password"
@@ -75,6 +77,12 @@ const Login: React.FC = () => {
             />
             <FormHelperText id="helper-password">mensagem de erro</FormHelperText>
           </FormControl>
+
+          <Grid item sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="contained" color="primary" type="submit">
+              Entrar
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </L.LoginContainer>
