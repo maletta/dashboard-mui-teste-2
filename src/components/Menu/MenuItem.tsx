@@ -1,31 +1,34 @@
 import React from 'react';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Box, Button, darken, lighten } from '@mui/material';
+import { alpha, Box, Button, darken, lighten } from '@mui/material';
 import { styled } from '@mui/material';
 
 interface INewButton {
   text: string;
   isCollapsed?: boolean;
+  handleClick?: any;
 }
 
 const MenuItemStyled = styled(Button)`
   display: flex;
   justify-content: space-between;
+  text-transform: capitalize;
   color: #fff;
   background-color: #2d3436;
 
-  box-shadow: none;
-  text-transform: capitalize;
-  padding-inline: 16px;
-  padding-block: 6px;
   height: 40px;
   min-width: 0px;
+  box-shadow: none;
+  padding-inline: 16px;
+  padding-block: 6px;
+  border-radius: 18px;
+
   &:hover {
-    background-color: ${lighten('#2d3436', 0.05)};
+    background-color: ${darken('#2d3436', 0.18)};
   }
-  & .MuiTouchRipple-child {
-    background-color: ${darken('#2d3436', 0.05)};
+  && .MuiTouchRipple-child {
+    background-color: ${darken('#2d3436', 0.55)};
   }
 
   svg {
@@ -33,9 +36,13 @@ const MenuItemStyled = styled(Button)`
   }
 `;
 
-const MenuItem: React.FC<INewButton> = ({ text, isCollapsed }) => {
+const MenuItem: React.FC<INewButton> = ({ text, isCollapsed, handleClick }) => {
   return (
-    <MenuItemStyled>
+    <MenuItemStyled
+      onClick={() => {
+        handleClick && handleClick();
+      }}
+    >
       <Box
         sx={{
           marginRight: isCollapsed ? '0' : '16px',

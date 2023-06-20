@@ -3,7 +3,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 // import logo from 'assets/logo-vipe-principal-menor.png';
 import logo from 'assets/output-onlinepngtools.png';
 
-import Menu from 'components/Menu/Menu';
+import Menu from 'components/Menu';
 
 import * as S from './styles';
 

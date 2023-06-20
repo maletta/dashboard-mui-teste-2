@@ -48,7 +48,7 @@ const AsideHeader = styled('div')<SidebarStyledProps>`
   border-bottom-style: solid;
   border-bottom-width: 1px;
   /* border-bottom-color: ${({ theme }) => lighten(theme.palette.grey[300], 0.2)}; */
-  border-bottom-color: ${({ theme }) => theme.palette.primary.main};
+  /* border-bottom-color: ${({ theme }) => theme.palette.primary.main}; */
   /* border-bottom-color: ${({ theme }) => theme.sidebar.backgroundColor}; */
 
   ${padding28}
@@ -89,6 +89,8 @@ const AsideCollapseButton = styled('button')<SidebarStyledProps>`
 
   transition: all 0.15s cubic-bezier(0.39, 0.575, 0.565, 1);
   cursor: pointer;
+
+  z-index: 2;
 
   svg {
     fill: #fff;
