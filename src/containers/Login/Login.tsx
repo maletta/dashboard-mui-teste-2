@@ -6,6 +6,9 @@ import logo from 'assets/logo-vipe-principal-menor.png';
 
 import * as L from './styles';
 
+// Referência de validação com formik e yup
+// https://fullstacksoup.blog/2021/09/27/react-material-form-validation-with-formik/
+
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   return (
