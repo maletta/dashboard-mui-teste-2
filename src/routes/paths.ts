@@ -66,7 +66,7 @@ const pathsWithAuth = {
     id: 'dashboard',
     children: {
       messages: {
-        id: 'message',
+        id: 'messages',
         path: '/dashboard/messages',
       },
       users: {
