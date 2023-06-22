@@ -13,6 +13,9 @@ export interface IAuthAction {
 
 export interface IUser {
   nome: string;
+  apelido: string;
+  email: string;
+  avatar: string;
 }
 
 export interface IAuthState {

@@ -1,6 +1,12 @@
 import React, { createContext, Dispatch, useContext, useEffect, useReducer, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { addAuthToken, axiosMockAdapterInstance, portalVipe, removeAuthToken } from 'services/portalVipe';
 
-import { authReducer, IAuthAction, IAuthState } from './reducer';
+import { useLocalStorage } from 'utils/localstorage';
+
+import { SplashScreen } from '../containers/DashboardLayout/styles';
+
+import { authReducer, IAuthAction, IAuthState, IUser } from './reducer';
 
 const INITIAL_STATE: IAuthState = {
   isAuthenticated: false,
@@ -21,14 +27,44 @@ export const AuthContext = createContext<IAuthReducer>({
   dispatch: () => null,
 });
 
-const setBearerToken = (token: string) => console.log('DEFININDO BEARER TOKEN ', token);
+interface IRequest<T> {
+  msg: string;
+  data: T;
+}
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // const [authState, authDispatch] = useReducer(authReducer, INITIAL_STATE);
   const [authState, authDispatch] = useReducer(authReducer, INITIAL_STATE);
   const initialized = useRef(false);
+  const navigate = useNavigate();
 
-  const initialize = async () => {
+  const signOut = () => {
+    authDispatch({ type: 'SIGN_OUT', payload: null });
+    removeAuthToken();
+    navigate('/');
+  };
+
+  const signIn = (token: string) => {
+    return portalVipe
+      .post<IRequest<IUser>>('/me')
+      .then(({ data: { data } }) => {
+        console.log('/me token válido');
+        addAuthToken(token);
+        const newUser = {
+          nome: data.nome,
+          apelido: data.apelido,
+          email: data.apelido,
+          avatar: data.avatar,
+        };
+        authDispatch({ type: 'SIGN_IN', payload: newUser });
+        navigate('/dashboard');
+      })
+      .catch(() => {
+        console.log('fala ao sign');
+      });
+  };
+
+  const validateToken = async () => {
     // evitar de ser chamado 2x em desenvolvimento no modo React.StrictMode
     if (initialized.current) {
       return;
@@ -36,28 +72,53 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
     initialized.current = true;
 
-    let isAuthenticated = null;
-
     try {
-      isAuthenticated = window.sessionStorage.getItem('token-main-api') === 'meu token velho';
+      const haveToken = useLocalStorage().getItem('TOKEN-MAIN-API') as string;
+
+      // configurando mock para /me
+      axiosMockAdapterInstance.onPost('/me').reply(function (config) {
+        return [
+          // return an array in the form of [status, data, headers]
+          401,
+          {
+            email: 'mauricio.maletta@somosvipe.com.br',
+            nome: 'mauricio',
+            apelido: 'maleta',
+            avatar: 'https://cdn-icons-png.flaticon.com/512/5523/5523674.png',
+          },
+        ];
+      });
+
+      portalVipe
+        .post<IRequest<IUser>>('/me')
+        .then(({ data: { data } }) => {
+          addAuthToken(haveToken);
+          const newUser = {
+            nome: data.nome,
+            apelido: data.apelido,
+            email: data.apelido,
+            avatar: data.avatar,
+          };
+          authDispatch({ type: 'SIGN_IN', payload: newUser });
+          navigate('/dashboard');
+        })
+        .catch(() => {
+          signOut();
+          navigate('/');
+        });
     } catch (err) {
-      console.error('Erro ao acessar localstorage ', err);
+      console.error('Token não existe no localstorage ', err);
+      signOut();
     }
-
-    const receivedUser = {
-      nome: 'novoUsuario',
-    };
-
-    authDispatch({ type: 'INITIALIZE', payload: receivedUser || null });
-
-    setBearerToken('meu token novo');
   };
 
   useEffect(() => {
-    initialize();
+    validateToken();
   }, []);
 
   return <AuthContext.Provider value={{ state: authState, dispatch: authDispatch }}>{children}</AuthContext.Provider>;
 };
+
+export const useAuth = () => useContext(AuthContext);
 
 export default AuthProvider;

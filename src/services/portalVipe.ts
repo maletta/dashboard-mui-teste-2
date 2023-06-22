@@ -3,8 +3,27 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 
 import { setupInterceptorsTo } from './interceptors';
 
-const axiosMockInstance = setupInterceptorsTo(axios.create());
-const axiosLiveInstance = setupInterceptorsTo(axios.create());
+const axiosMockInstance = setupInterceptorsTo(
+  axios.create({
+    baseURL: process.env.REACT_APP_MAIN_API,
+  }),
+);
+const axiosLiveInstance = setupInterceptorsTo(
+  axios.create({
+    baseURL: process.env.REACT_APP_MAIN_API,
+  }),
+);
 
-export const axiosMockAdapterInstance = new AxiosMockAdapter(axiosMockInstance, { delayResponse: 0 });
-export default process.env.isAxioMock ? axiosMockInstance : axiosLiveInstance;
+// tempo em milissegundos
+const axiosMockAdapterInstance = new AxiosMockAdapter(axiosMockInstance, { delayResponse: 2000 });
+const portalVipe = process.env.REACT_APP_IS_AXIOS_MOCK ? axiosMockInstance : axiosLiveInstance;
+
+const addAuthToken = (token: string) => {
+  portalVipe.defaults.headers.common.Authorization = `Bearer ${token}`;
+};
+
+const removeAuthToken = () => {
+  portalVipe.defaults.headers.common.Authorization = ``;
+};
+
+export { addAuthToken, axiosMockAdapterInstance, portalVipe, removeAuthToken };
