@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createBrowserRouter, Outlet, useMatches } from 'react-router-dom';
 import styled from '@emotion/styled';
+import App from 'App';
 
 import Breadcrumbs from 'components/Breadcrumbs';
 import DashboardLayout from 'containers/DashboardLayout/DashboardLayout';
@@ -34,42 +35,48 @@ const Messages = () => {
 
 const router = createBrowserRouter([
   {
-    path: pathsWithAuth.main.path,
-    element: <Login />,
-  },
-  {
-    path: pathsWithAuth.dashboard.path,
-    element: <DashboardLayout />,
+    path: '/',
+    element: <App />,
     children: [
       {
-        path: pathsWithAuth.dashboard.children.users.children.list.path,
-        element: <User />,
-        handle: {
-          crumb: () => <span>{'/dashboard user'}</span>,
-        },
+        path: pathsWithAuth.main.path,
+        element: <Login />,
+      },
+      {
+        path: pathsWithAuth.dashboard.path,
+        element: <DashboardLayout />,
         children: [
           {
-            path: 'teste2/',
+            path: pathsWithAuth.dashboard.children.users.children.list.path,
+            element: <User />,
+            handle: {
+              crumb: () => <span>{'/dashboard user'}</span>,
+            },
+            children: [
+              {
+                path: 'teste2/',
+                element: <Messages />,
+                handle: {
+                  crumb: () => <span>{'/dashboard/teste2/'}</span>,
+                },
+              },
+            ],
+          },
+          {
+            path: '/dashboard/teste',
             element: <Messages />,
             handle: {
-              crumb: () => <span>{'/dashboard/teste2/'}</span>,
+              crumb: () => <span>{'/dashboard/teste/'}</span>,
+            },
+          },
+          {
+            path: 'event',
+            element: <Messages />,
+            handle: {
+              crumb: () => <span>{'/event'}</span>,
             },
           },
         ],
-      },
-      {
-        path: '/dashboard/teste',
-        element: <Messages />,
-        handle: {
-          crumb: () => <span>{'/dashboard/teste/'}</span>,
-        },
-      },
-      {
-        path: 'event',
-        element: <Messages />,
-        handle: {
-          crumb: () => <span>{'/event'}</span>,
-        },
       },
     ],
   },

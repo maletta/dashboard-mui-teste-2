@@ -1,10 +1,9 @@
 import React, { createContext, Dispatch, useContext, useEffect, useReducer, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { addAuthToken, axiosMockAdapterInstance, portalVipe, removeAuthToken } from 'services/portalVipe';
+import { addAuthToken, portalVipe, removeAuthToken } from 'services/portalVipe';
 
 import { useLocalStorage } from 'utils/localstorage';
 
-import { SplashScreen } from '../containers/DashboardLayout/styles';
+import './context.mock';
 
 import { authReducer, IAuthAction, IAuthState, IUser } from './reducer';
 
@@ -36,17 +35,16 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   // const [authState, authDispatch] = useReducer(authReducer, INITIAL_STATE);
   const [authState, authDispatch] = useReducer(authReducer, INITIAL_STATE);
   const initialized = useRef(false);
-  const navigate = useNavigate();
 
   const signOut = () => {
     authDispatch({ type: 'SIGN_OUT', payload: null });
     removeAuthToken();
-    navigate('/');
+    // navigate('/');
   };
 
   const signIn = (token: string) => {
     return portalVipe
-      .post<IRequest<IUser>>('/me')
+      .post<IRequest<IUser>>('/user', { username: 'mauricio' })
       .then(({ data: { data } }) => {
         console.log('/me token válido');
         addAuthToken(token);
@@ -57,14 +55,18 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
           avatar: data.avatar,
         };
         authDispatch({ type: 'SIGN_IN', payload: newUser });
-        navigate('/dashboard');
+        // navigate('/dashboard');
+        return Boolean(token);
       })
       .catch(() => {
         console.log('fala ao sign');
+
+        return false;
       });
   };
 
   const validateToken = async () => {
+    console.log('validate');
     // evitar de ser chamado 2x em desenvolvimento no modo React.StrictMode
     if (initialized.current) {
       return;
@@ -74,20 +76,6 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
     try {
       const haveToken = useLocalStorage().getItem('TOKEN-MAIN-API') as string;
-
-      // configurando mock para /me
-      axiosMockAdapterInstance.onPost('/me').reply(function (config) {
-        return [
-          // return an array in the form of [status, data, headers]
-          401,
-          {
-            email: 'mauricio.maletta@somosvipe.com.br',
-            nome: 'mauricio',
-            apelido: 'maleta',
-            avatar: 'https://cdn-icons-png.flaticon.com/512/5523/5523674.png',
-          },
-        ];
-      });
 
       portalVipe
         .post<IRequest<IUser>>('/me')
@@ -100,11 +88,11 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
             avatar: data.avatar,
           };
           authDispatch({ type: 'SIGN_IN', payload: newUser });
-          navigate('/dashboard');
+          // navigate('/dashboard');
         })
         .catch(() => {
           signOut();
-          navigate('/');
+          // navigate('/');
         });
     } catch (err) {
       console.error('Token não existe no localstorage ', err);
