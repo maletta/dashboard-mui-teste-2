@@ -1,5 +1,5 @@
 import React, { createContext, Dispatch, useContext, useEffect, useReducer, useRef } from 'react';
-import { addAuthToken, portalVipe, removeAuthToken } from 'services/portalVipe';
+import { addAuthToken, IRequest, portalVipe, removeAuthToken } from 'services/portalVipe';
 
 import { useLocalStorage } from 'utils/localstorage';
 
@@ -25,7 +25,7 @@ interface IAuthReducer {
 }
 
 // export const AuthContext = React.createContext<IAuthState | null>(INITIAL_STATE);
-export const AuthContext = createContext<IAuthReducer>({
+const AuthContext = createContext<IAuthReducer>({
   authState: INITIAL_STATE,
   authDispatch: () => null,
   signIn: () => undefined,
@@ -33,25 +33,19 @@ export const AuthContext = createContext<IAuthReducer>({
   validateToken: () => undefined,
 });
 
-interface IRequest<T> {
-  msg: string;
-  data: T;
-}
-
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // const [authState, authDispatch] = useReducer(authReducer, INITIAL_STATE);
   const [authState, authDispatch] = useReducer(authReducer, INITIAL_STATE);
   const initialized = useRef(false);
 
   const signOut = () => {
     authDispatch({ type: 'SIGN_OUT', payload: null });
     removeAuthToken();
-    // navigate('/');
+    useLocalStorage().removeItem('TOKEN-MAIN-API');
   };
 
   const signIn = (token: string) => {
     return portalVipe
-      .post<IRequest<IUser>>('/user', { username: 'mauricio' })
+      .post<IRequest<IUser>>('/me', { username: 'mauricio' })
       .then(({ data: { data } }) => {
         console.log('/me token válido');
         addAuthToken(token);
@@ -61,13 +55,11 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
           email: data.apelido,
           avatar: data.avatar,
         };
+        console.log('new user ', newUser);
         authDispatch({ type: 'SIGN_IN', payload: newUser });
-        // navigate('/dashboard');
         return Boolean(token);
       })
       .catch(() => {
-        console.log('fala ao sign');
-
         return false;
       });
   };
@@ -81,12 +73,11 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
     initialized.current = true;
 
-    try {
-      const haveToken = useLocalStorage().getItem('TOKEN-MAIN-API') as string;
+    const haveToken = useLocalStorage().getItem('TOKEN-MAIN-API');
 
+    if (haveToken) {
       portalVipe
         .post<IRequest<IUser>>('/me')
-        // .then(({ data: { data } }) => {
         .then(({ data: { data } }) => {
           console.log('data from API', data);
           addAuthToken(haveToken);
@@ -102,21 +93,14 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         .catch(() => {
           signOut();
           console.log('token inválido catch');
-          // navigate('/');
         });
-    } catch (err) {
-      console.error('Token não existe no localstorage ', err);
+    } else {
       signOut();
     }
   };
 
   useEffect(() => {
     validateToken();
-    // if (initialized.current) {
-    //   return;
-    // }
-    // initialized.current = true;
-    // console.log('user mudou ', authState);
   }, []);
 
   return (

@@ -1,7 +1,5 @@
 // import { RouteObject } from 'react-router-dom';
 
-import { InferencePriority } from 'typescript';
-
 // interface IPath {
 //   pathId: string;
 // }

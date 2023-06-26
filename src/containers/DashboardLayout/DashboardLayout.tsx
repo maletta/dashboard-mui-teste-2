@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import Sidebar from 'components/Sidebar/Sidebar';
-import SplashScreen from 'components/SplashScreen/SplashScreen';
 
 import * as DL from './styles';
 
 const DashboardLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  console.log('to no dashboard');
 
   return (
     <DL.GridContainer isCollapsed={isCollapsed}>

@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-import { Button, FormControl, FormHelperText, Grid, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
+import LoginIcon from '@mui/icons-material/Login';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { FormControl, FormHelperText, Grid, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
 import logo from 'assets/logo-vipe-principal-menor.png';
 import { useAuth } from 'context/auth-context';
+import { IRequest, portalVipe } from 'services/portalVipe';
 
 import SplashScreen from 'components/SplashScreen/SplashScreen';
+
+import './login.mock';
 
 import * as L from './styles';
 
@@ -14,11 +20,40 @@ import * as L from './styles';
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { authState } = useAuth();
+  const { authState, signIn } = useAuth();
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (authState.isLoading) [];
-  }, []);
+  function handleLoginClick() {
+    setIsFetching(true);
+    return portalVipe
+      .post<IRequest<{ token: string }>>('/auth', {
+        email: 'viniciusteste@teste.com.br',
+        senha: 'senhateste',
+      })
+      .then(({ data: { data } }) => {
+        return signIn(data.token);
+      })
+      .catch(() => {
+        return false;
+      })
+      .finally(() => {
+        setIsFetching(false);
+      });
+  }
+
+  useLayoutEffect(() => {
+    console.log('use layout effect login ', authState);
+    if (!authState.isLoading) {
+      if (authState.user) {
+        navigate('/dashboard');
+      }
+    }
+  }, [authState]);
+
+  if (authState.isLoading) {
+    return <SplashScreen />;
+  }
 
   return (
     <L.LoginContainer>
@@ -91,9 +126,17 @@ const Login: React.FC = () => {
           </FormControl>
 
           <Grid item sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant="contained" color="primary" type="submit">
+            <LoadingButton
+              variant="contained"
+              color="primary"
+              loading={isFetching}
+              loadingPosition="start"
+              type="submit"
+              startIcon={<LoginIcon />}
+              onClick={handleLoginClick}
+            >
               Entrar
-            </Button>
+            </LoadingButton>
           </Grid>
         </Grid>
       </Grid>

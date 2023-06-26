@@ -14,6 +14,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import clsx from 'clsx';
+import { useAuth } from 'context/auth-context';
 
 interface ICollapsed {
   isCollapsed?: boolean;
@@ -47,7 +48,7 @@ const ListItemTextStyled = styled(ListItemText)`
 
 const MenuList: React.FC<IMenuList> = ({ isCollapsed }) => {
   const [open, setOpen] = React.useState(true);
-
+  const { signOut } = useAuth();
   const handleClick = () => {
     setOpen(!open);
   };
@@ -111,7 +112,7 @@ const MenuList: React.FC<IMenuList> = ({ isCollapsed }) => {
           </Collapse>
         )}
 
-        <ListItemButtonStyled className={clsx({ isCollaped: isCollapsed })}>
+        <ListItemButtonStyled className={clsx({ isCollaped: isCollapsed })} onClick={() => signOut()}>
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>

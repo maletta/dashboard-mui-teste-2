@@ -44,7 +44,7 @@ export function authReducer(state: IAuthState, action: IAuthAction): IAuthState 
     case 'SIGN_IN':
       return {
         ...state,
-        ...(payload && { ...payload, isAuthenticated: true }),
+        ...(payload && { isAuthenticated: true, isLoading: false, user: { ...payload } }),
       };
 
     case 'SIGN_OUT':

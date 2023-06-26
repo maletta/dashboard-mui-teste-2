@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'context/auth-context';
 
@@ -11,9 +11,10 @@ interface IAuthGuard {
 const AuthGuard = ({ children }: IAuthGuard) => {
   const { authState } = useAuth();
   const navigate = useNavigate();
+  console.log('to no auth guard');
 
-  useEffect(() => {
-    console.log('state mudou auth guard', authState);
+  // volta para o login caso user é null
+  useLayoutEffect(() => {
     if (!authState.isLoading) {
       if (!authState.user) {
         navigate('/');
@@ -21,7 +22,7 @@ const AuthGuard = ({ children }: IAuthGuard) => {
     }
   }, [authState]);
 
-  if (authState.isLoading) {
+  if (authState.isLoading && !authState.user) {
     return <SplashScreen />;
   }
 
