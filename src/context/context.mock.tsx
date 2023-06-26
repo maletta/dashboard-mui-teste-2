@@ -1,7 +1,7 @@
 import { portalVipeClient } from 'services/clients/portalVipe';
 
 portalVipeClient.axiosMockAdapterInstance // configurando mock para /me
-  .onPost('/me')
+  .onGet('/me')
   .reply(function (config) {
     return [
       // return an array in the form of [status, data, headers]
