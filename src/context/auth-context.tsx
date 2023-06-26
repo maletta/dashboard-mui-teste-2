@@ -24,7 +24,6 @@ interface IAuthReducer {
   validateToken: () => void;
 }
 
-// export const AuthContext = React.createContext<IAuthState | null>(INITIAL_STATE);
 const AuthContext = createContext<IAuthReducer>({
   authState: INITIAL_STATE,
   authDispatch: () => null,

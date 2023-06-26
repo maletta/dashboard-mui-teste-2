@@ -1,4 +1,4 @@
-import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   console.info(`[request] [${JSON.stringify(config)}]`);
