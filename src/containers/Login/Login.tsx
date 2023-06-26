@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import { Button, FormControl, FormHelperText, Grid, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
 import logo from 'assets/logo-vipe-principal-menor.png';
+import { useAuth } from 'context/auth-context';
+
+import SplashScreen from 'components/SplashScreen/SplashScreen';
 
 import * as L from './styles';
 
@@ -11,6 +14,12 @@ import * as L from './styles';
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { authState } = useAuth();
+
+  useEffect(() => {
+    if (authState.isLoading) [];
+  }, []);
+
   return (
     <L.LoginContainer>
       <Grid

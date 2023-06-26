@@ -1,10 +1,8 @@
 import * as React from 'react';
-import ArticleIcon from '@mui/icons-material/Article';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
 import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
@@ -15,6 +13,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
+import clsx from 'clsx';
+
 interface ICollapsed {
   isCollapsed?: boolean;
 }
@@ -71,19 +71,19 @@ const MenuList: React.FC<IMenuList> = ({ isCollapsed }) => {
           </ListSubheader>
         }
       >
-        <ListItemButtonStyled isCollapsed={isCollapsed}>
+        <ListItemButtonStyled className={clsx({ isCollaped: isCollapsed })}>
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
           <ListItemTextStyled primary="Meu perfil" />
         </ListItemButtonStyled>
-        <ListItemButtonStyled isCollapsed={isCollapsed}>
+        <ListItemButtonStyled className={clsx({ isCollaped: isCollapsed })}>
           <ListItemIcon>
             <DraftsIcon />
           </ListItemIcon>
           <ListItemTextStyled primary="Mensagens" />
         </ListItemButtonStyled>
-        <ListItemButtonStyled isCollapsed={isCollapsed} onClick={handleClick}>
+        <ListItemButtonStyled className={clsx({ isCollaped: isCollapsed })} onClick={handleClick}>
           <ListItemIcon sx={{ fontSize: '10px' }}>
             <EditIcon />
           </ListItemIcon>
@@ -94,14 +94,14 @@ const MenuList: React.FC<IMenuList> = ({ isCollapsed }) => {
         {!isCollapsed && (
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding dense>
-              <ListItemButtonStyled isCollapsed={isCollapsed} sx={{ pl: 4 }}>
+              <ListItemButtonStyled className={clsx({ isCollaped: isCollapsed })} sx={{ pl: 4 }}>
                 <ListItemIcon>
                   <FiberManualRecordRoundedIcon sx={{ fontSize: 'small' }} />
                 </ListItemIcon>
                 <ListItemTextStyled primary="Edita perfil" />
               </ListItemButtonStyled>
 
-              <ListItemButtonStyled isCollapsed={isCollapsed} sx={{ pl: 4 }}>
+              <ListItemButtonStyled className={clsx({ isCollaped: isCollapsed })} sx={{ pl: 4 }}>
                 <ListItemIcon>
                   <FiberManualRecordRoundedIcon sx={{ fontSize: 'small' }} />
                 </ListItemIcon>
@@ -111,7 +111,7 @@ const MenuList: React.FC<IMenuList> = ({ isCollapsed }) => {
           </Collapse>
         )}
 
-        <ListItemButtonStyled isCollapsed={isCollapsed}>
+        <ListItemButtonStyled className={clsx({ isCollaped: isCollapsed })}>
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>

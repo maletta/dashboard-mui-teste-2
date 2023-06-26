@@ -1,8 +1,7 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
-interface IAppProps {
-  children: React.ReactNode | null | undefined;
-}
+
+import './styles/global-styles.css';
 
 const App = () => {
   return <Outlet />;

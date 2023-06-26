@@ -15,15 +15,22 @@ const INITIAL_STATE: IAuthState = {
 
 // referências tipagem de dispatch e reducer compostos
 // https://dev.to/elisealcala/react-context-with-usereducer-and-typescript-4obm
+
 interface IAuthReducer {
-  state: IAuthState;
-  dispatch: Dispatch<IAuthAction>;
+  authState: IAuthState;
+  authDispatch: Dispatch<IAuthAction>;
+  signIn: (token: string) => void;
+  signOut: () => void;
+  validateToken: () => void;
 }
 
 // export const AuthContext = React.createContext<IAuthState | null>(INITIAL_STATE);
 export const AuthContext = createContext<IAuthReducer>({
-  state: INITIAL_STATE,
-  dispatch: () => null,
+  authState: INITIAL_STATE,
+  authDispatch: () => null,
+  signIn: () => undefined,
+  signOut: () => undefined,
+  validateToken: () => undefined,
 });
 
 interface IRequest<T> {
@@ -79,7 +86,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
       portalVipe
         .post<IRequest<IUser>>('/me')
+        // .then(({ data: { data } }) => {
         .then(({ data: { data } }) => {
+          console.log('data from API', data);
           addAuthToken(haveToken);
           const newUser = {
             nome: data.nome,
@@ -87,11 +96,12 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
             email: data.apelido,
             avatar: data.avatar,
           };
-          authDispatch({ type: 'SIGN_IN', payload: newUser });
-          // navigate('/dashboard');
+          authDispatch({ type: 'INITIALIZE', payload: newUser });
+          console.log('token válido');
         })
         .catch(() => {
           signOut();
+          console.log('token inválido catch');
           // navigate('/');
         });
     } catch (err) {
@@ -102,9 +112,18 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   useEffect(() => {
     validateToken();
+    // if (initialized.current) {
+    //   return;
+    // }
+    // initialized.current = true;
+    // console.log('user mudou ', authState);
   }, []);
 
-  return <AuthContext.Provider value={{ state: authState, dispatch: authDispatch }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ authState: authState, authDispatch: authDispatch, signIn, signOut, validateToken }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);

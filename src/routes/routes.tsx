@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { createBrowserRouter, Outlet, useMatches } from 'react-router-dom';
+import { createBrowserRouter, Outlet, useMatches, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import App from 'App';
+import AuthGuard from 'guard/auth-guard';
 
 import Breadcrumbs from 'components/Breadcrumbs';
 import DashboardLayout from 'containers/DashboardLayout/DashboardLayout';
@@ -10,16 +11,20 @@ import Login from 'containers/Login/Login';
 import { pathsWithAuth } from './paths';
 
 const User = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <Breadcrumbs />
-      <div>Página de usuários</div>
+      <p>Usuários</p>
+      <div onClick={() => navigate('/dashboard/messages')}>Ir para messages</div>
       <Outlet />
     </div>
   );
 };
 
 const Messages = () => {
+  const navigate = useNavigate();
+
   const Messages = styled.div`
     width: 100%;
     height: 100%;
@@ -28,7 +33,8 @@ const Messages = () => {
   return (
     <div>
       <Breadcrumbs />
-      <Messages>Página de eventos</Messages>
+      <p>Messages</p>
+      <Messages onClick={() => navigate('/dashboard/users')}>Ir para usuarios</Messages>
     </div>
   );
 };
@@ -44,7 +50,11 @@ const router = createBrowserRouter([
       },
       {
         path: pathsWithAuth.dashboard.path,
-        element: <DashboardLayout />,
+        element: (
+          <AuthGuard>
+            <DashboardLayout />
+          </AuthGuard>
+        ),
         children: [
           {
             path: pathsWithAuth.dashboard.children.users.children.list.path,
@@ -63,7 +73,7 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: '/dashboard/teste',
+            path: '/dashboard/messages',
             element: <Messages />,
             handle: {
               crumb: () => <span>{'/dashboard/teste/'}</span>,
