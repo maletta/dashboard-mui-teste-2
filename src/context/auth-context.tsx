@@ -45,10 +45,11 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   const signIn = (token: string) => {
     return portalVipe
-      .post<IRequest<IUser>>('/me', { username: 'mauricio' })
+      .post<IRequest<IUser>>('/me')
       .then(({ data: { data } }) => {
         console.log('/me token válido');
         addAuthToken(token);
+        useLocalStorage().setItem('TOKEN-MAIN-API', token);
         const newUser = {
           nome: data.nome,
           apelido: data.apelido,
