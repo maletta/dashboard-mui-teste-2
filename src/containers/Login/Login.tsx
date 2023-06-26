@@ -7,7 +7,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { FormControl, FormHelperText, Grid, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
 import logo from 'assets/logo-vipe-principal-menor.png';
 import { useAuth } from 'context/auth-context';
-import { IRequest, portalVipe } from 'services/portalVipe';
+import { postAuth } from 'services/api/portalVipe';
 
 import SplashScreen from 'components/SplashScreen/SplashScreen';
 
@@ -26,11 +26,10 @@ const Login: React.FC = () => {
 
   function handleLoginClick() {
     setIsFetching(true);
-    return portalVipe
-      .post<IRequest<{ token: string }>>('/auth', {
-        email: 'viniciusteste@teste.com.br',
-        senha: 'senhateste',
-      })
+    return postAuth({
+      email: 'viniciusteste@teste.com.br',
+      senha: 'senhateste',
+    })
       .then(({ data: { data } }) => {
         return signIn(data.token);
       })

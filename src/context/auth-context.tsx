@@ -1,5 +1,6 @@
 import React, { createContext, Dispatch, useContext, useEffect, useReducer, useRef } from 'react';
-import { addAuthToken, IRequest, portalVipe, removeAuthToken } from 'services/portalVipe';
+import { getMe } from 'services/api/portalVipe';
+import { portalVipeClient } from 'services/clients/portalVipe';
 
 import { useLocalStorage } from 'utils/localstorage';
 
@@ -35,6 +36,7 @@ const AuthContext = createContext<IAuthReducer>({
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [authState, authDispatch] = useReducer(authReducer, INITIAL_STATE);
   const initialized = useRef(false);
+  const { addAuthToken, removeAuthToken } = portalVipeClient;
 
   const signOut = () => {
     authDispatch({ type: 'SIGN_OUT', payload: null });
@@ -43,8 +45,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   };
 
   const signIn = (token: string) => {
-    return portalVipe
-      .post<IRequest<IUser>>('/me')
+    return getMe()
       .then(({ data: { data } }) => {
         console.log('/me token válido');
         addAuthToken(token);
@@ -76,8 +77,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     const haveToken = useLocalStorage().getItem('TOKEN-MAIN-API');
 
     if (haveToken) {
-      portalVipe
-        .post<IRequest<IUser>>('/me')
+      getMe()
         .then(({ data: { data } }) => {
           console.log('data from API', data);
           addAuthToken(haveToken);
