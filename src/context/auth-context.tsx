@@ -4,9 +4,7 @@ import { portalVipeClient } from 'services/clients/portalVipe';
 
 import { useLocalStorage } from 'utils/localstorage';
 
-import './context.mock';
-
-import { authReducer, IAuthAction, IAuthState, IUser } from './reducer';
+import { authReducer, IAuthAction, IAuthState } from './reducer';
 
 const INITIAL_STATE: IAuthState = {
   isAuthenticated: false,
@@ -36,20 +34,22 @@ const AuthContext = createContext<IAuthReducer>({
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [authState, authDispatch] = useReducer(authReducer, INITIAL_STATE);
   const initialized = useRef(false);
+  const localStorage = useLocalStorage();
   const { addAuthToken, removeAuthToken } = portalVipeClient;
 
   const signOut = () => {
     authDispatch({ type: 'SIGN_OUT', payload: null });
     removeAuthToken();
-    useLocalStorage().removeItem('TOKEN-MAIN-API');
+    localStorage.removeItem('TOKEN-MAIN-API');
   };
 
   const signIn = (token: string) => {
+    localStorage.setItem('TOKEN-MAIN-API', token);
+    addAuthToken(token);
+    console.log('entrei sign in ', token);
     return getMe()
       .then(({ data: { data } }) => {
         console.log('/me token válido');
-        addAuthToken(token);
-        useLocalStorage().setItem('TOKEN-MAIN-API', token);
         const newUser = {
           nome: data.nome,
           apelido: data.apelido,
@@ -74,13 +74,13 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
     initialized.current = true;
 
-    const haveToken = useLocalStorage().getItem('TOKEN-MAIN-API');
+    const haveToken = localStorage.getItem('TOKEN-MAIN-API');
+    addAuthToken(haveToken);
 
     if (haveToken) {
       getMe()
         .then(({ data: { data } }) => {
           console.log('data from API', data);
-          addAuthToken(haveToken);
           const newUser = {
             nome: data.nome,
             apelido: data.apelido,

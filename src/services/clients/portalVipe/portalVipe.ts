@@ -28,6 +28,7 @@ const client = process.env.REACT_APP_IS_AXIOS_MOCK ? axiosMockInstance : axiosLi
 // configurações para todas as requisições
 
 const addAuthToken = (token: string | null): void => {
+  console.log('add auth token ', token);
   client.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
 

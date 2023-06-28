@@ -32,7 +32,7 @@ const LogoContainer = styled('div')`
   /* background: #fff; */
   border-radius: 4px;
 
-  top: -65px;
+  top: -75px;
   left: 50%;
   transform: translateX(-104px);
 `;

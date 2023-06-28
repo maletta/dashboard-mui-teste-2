@@ -9,8 +9,12 @@ interface IAuth {
   email: string;
 }
 
+interface IAuthToken {
+  token: string;
+}
+
 function postAuth(auth: IAuth) {
-  return portalVipeClient.post<IRequest<{ token: string }>>(`/auth`, auth);
+  return portalVipeClient.post<IRequest<IAuthToken>, AxiosResponse<IRequest<IAuthToken>, IAuthToken>>(`/auth`, auth);
 }
 
 function getMe() {
